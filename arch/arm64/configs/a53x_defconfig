@@ -7650,7 +7650,6 @@ CONFIG_INIT_ON_ALLOC_DEFAULT_ON=y
 # end of Memory initialization
 # end of Kernel hardening options
 
-# CONFIG_SECURITY_DEFEX is not set
 # CONFIG_GAF is not set
 # CONFIG_MEMORY_ZEROISATION is not set
 # CONFIG_MZ_PAGE_V2 is not set
