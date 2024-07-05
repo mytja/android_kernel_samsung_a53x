@@ -614,20 +614,7 @@ static void destroy_gre_conntrack(struct nf_conn *ct)
 static void
 destroy_conntrack(struct nf_conntrack *nfct)
 {
-	
-	unsigned long flags;
 	struct nf_conn *ct = (struct nf_conn *)nfct;
-
-    // SEC_PRODUCT_FEATURE_KNOX_SUPPORT_NPA {
-#ifdef CONFIG_KNOX_NCM
-	spin_lock_irqsave(&knox_nf_conntrack,flags);
-	if (NF_CONN_NPA_VENDOR_DATA_GET(ct)) {
-		kfree(NF_CONN_NPA_VENDOR_DATA_GET(ct));
-		ct->android_oem_data1 = (u64)NULL;
-	}
-	spin_unlock_irqrestore(&knox_nf_conntrack,flags);
-#endif
-	// SEC_PRODUCT_FEATURE_KNOX_SUPPORT_NPA }
 
 	pr_debug("destroy_conntrack(%p)\n", ct);
 	WARN_ON(atomic_read(&nfct->use) != 0);
@@ -1580,8 +1567,6 @@ EXPORT_SYMBOL_GPL(nf_conntrack_alloc);
 
 void nf_conntrack_free(struct nf_conn *ct)
 {
-	
-	unsigned long flags;
 	struct net *net = nf_ct_net(ct);
 
 	/* A freed object has refcnt == 0, that's
@@ -1592,16 +1577,6 @@ void nf_conntrack_free(struct nf_conn *ct)
 	nf_ct_ext_destroy(ct);
 	kmem_cache_free(nf_conntrack_cachep, ct);
 	smp_mb__before_atomic();
-	// SEC_PRODUCT_FEATURE_KNOX_SUPPORT_NPA {
-#ifdef CONFIG_KNOX_NCM
-	spin_lock_irqsave(&knox_nf_conntrack,flags);
-	if (NF_CONN_NPA_VENDOR_DATA_GET(ct)) {
-		kfree(NF_CONN_NPA_VENDOR_DATA_GET(ct));
-		ct->android_oem_data1 = (u64)NULL;
-	}
-	spin_unlock_irqrestore(&knox_nf_conntrack,flags);
-#endif
-	// SEC_PRODUCT_FEATURE_KNOX_SUPPORT_NPA }
 	atomic_dec(&net->ct.count);
 }
 EXPORT_SYMBOL_GPL(nf_conntrack_free);
